@@ -3,6 +3,7 @@ from flask import Flask, jsonify
 from markupsafe import escape
 from flask_db2 import DB2
 import sys
+from flask_cors import CORS
 
 #creamos un objeto de tipo flask
 app= Flask (__name__)
@@ -16,6 +17,8 @@ app.config['DB2_USER'] = 'db2inst1'
 app.config['DB2_PASSWORD'] = 'hola'
 
 db = DB2(app)
+
+CORS(app)
 
 #le agregamos rutas
 #@ en python significa que vamos a usar un decorator
@@ -47,48 +50,4 @@ def servicio_default():
         resultado.append(actual)
 
     return jsonify(resultado)
-
-#podemos tener todas las rutas que queramos
-@app.route("/segunda")
-def segunda_ruta():
-    return "<h1>segunda ruta<h1/>"
-#podemos recibir variables a traves de urls
-#f string formatting
-@app.route("/nombre/<el_nombre>")
-def nombre(el_nombre):
-    return f"hola {escape(el_nombre)}, espero que est&eacute;s bien."
-#converters
-@app.route("/entero/<int:valor>")
-def entero(valor):
-    return f"El valor que mandaste fue {escape(valor)} "
-
-@app.route("/ruta/<path:valor>")
-def ruta(valor):
-    return f"El valor que mandaste fue {escape(valor)} "
-
-#lo que vamos a regresar generalmente va ser json
-#ventaja flask refresar un diccionario python y se jsonifica
-
-diccionario ={
-    "nombre" : "Garfiol",
-    "edad": 30,
-    "peso": 64
-}
-
-@app.route ("/json")
-def json():
-    return diccionario
-
-# se puede discriminar por medio de metodos de request de HTTP
-# GET,POST,PUT,DELETE
-
-@app.route ("/metodo", methods = ['GET','POST'] )
-def metodo_get_post():
-    return "request hecha por get o post"
-
-@app.route ("/metodo", methods = ['PUT','DELETE'] )
-def metodo_put_delete():
-    return "request hecha por put o delete"
-
-#extension de vs code thunderclient
 

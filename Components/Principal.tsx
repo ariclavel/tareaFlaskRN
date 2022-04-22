@@ -12,17 +12,15 @@ const Principal = ({navigation} : any) => {
 
     const[cargando, setCargando] = useState(true);
     const[datos, setDatos] = useState([]);
-    const navigationAction =(nombre : any,peso: any,edad: any) => {
+    const navigationAction =(nombre : any,peso: any,id: any) => {
       console.log("ayuda");
-      navigation.navigate("Detalle", {nombre: nombre, peso: peso, edad: edad});
+      navigation.navigate("Detalle", {nombre: nombre, peso: peso, id: id});
     }
    
   
     const solicitud = async() => {
   
-      var respuesta = await fetch(`http://127.0.0.1:5000/` , {
-        mode: 'no-cors'
-});
+      var respuesta = await fetch(`http://127.0.0.1:5000/`);
       setDatos(await respuesta.json());
       setCargando(false);
     };
@@ -40,7 +38,7 @@ const Principal = ({navigation} : any) => {
               <Item
                 nombre={item.nombre}
                 peso={item.peso}
-                edad={item.edad}
+                id={item.id}
                 action = {navigationAction}
               />
             }

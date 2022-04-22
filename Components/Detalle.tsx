@@ -8,7 +8,7 @@ const Detalle = ({route} : any) => {
         <Text> {route.params.nombre} </Text>
         <Text> --------------------------------------------- </Text>
         <Text> PESO: {route.params.peso} </Text>
-        <Text> EDAD: {route.params.edad} </Text>
+        <Text> ID: {route.params.id} </Text>
       </View>
     );
   }
