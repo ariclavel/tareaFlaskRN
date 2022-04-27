@@ -10,6 +10,7 @@ import ibm_db_sa
 import flask_login
 import secrets 
 import flask
+from datetime import datetime
 
 #creamos un objeto de tipo flask
 app= Flask (__name__)
@@ -38,9 +39,9 @@ app.secret_key = secrets.token_urlsafe(16)
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
+#"a@a.com" : {"pass" : "hola"}
 
-
-usuarios = {"a@a.com" : {"pass" : "hola"}}
+usuarios = {"a@gmail.com" : {"pass" : "hola"}}
 
 # definir una clase para contener la descripción de nuestros usuarios
 class Usuario(flask_login.UserMixin):
@@ -58,7 +59,7 @@ def user_loader(email):
 # método que se invoca para obtención de usuarios cuando se hace request
 @login_manager.request_loader
 def request_loader(request):
-   
+     
     # obtener información que nos mandan en encabezado
     key = request.headers.get('Authorization')
     print(key, file=sys.stdout)
@@ -67,29 +68,37 @@ def request_loader(request):
         return None
 
     processed = key.split(":")
+    user = Usuario()
+    user.id = processed[0]
+    return user
+    #if processed[0] in usuarios and processed[1] == usuarios[processed[0]]['pass']:
+       # user = Usuario()
+       # user.id = processed[0]
+       # return user
 
-    if processed[0] in usuarios and processed[1] == usuarios[processed[0]]['pass']:
-        user = Usuario()
-        user.id = processed[0]
-        return user
-
-    return None
+   # return None
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+   
     # podemos verificar con qué método se accedió 
     if flask.request.method == 'GET':
         return 
     # de otra manera tuvo que ser POST
     # obtener datos 
     email = flask.request.form['email']
+    
     # verificar validez de usuario vs fuente de datos
     if email in usuarios and flask.request.form['password'] == usuarios[email]['pass']:
         user = Usuario()
         user.id = email
         flask_login.login_user(user)
+        #token = secrets.token_urlsafe(16)
+        #ahora = datetime.now()
+        #exp = ahora.strftime("%Y-%m-%d")
         # esta es la parte en donde pueden generar un token
-        # return flask.redirect(flask.url_for('protegido'))
-        return "USUARIO VALIDO",200
+        #return flask.redirect(flask.url_for('protegido'))
+       
+        return "Bienvenid@ "+ email,200
 
     # si no jaló mostrar error
     return "CREDENCIALES INVÁLIDAS",401
@@ -140,13 +149,15 @@ def servicio_default():
 
     return jsonify(resultado)
 
-@app.route("/users")
+@app.route("/users", methods=['POST'])
 def servicio():
+    e = flask.request.form['e']
+    print(e)
      # lo primero es obtener cursor 
     cur = db.connection.cursor()
 
      # con cursor hecho podemos ejecutar queries
-    cur.execute("SELECT * FROM users")
+    cur.execute("SELECT * FROM users WHERE username = '{}'".format(e))
 
     # obtenemos datos
     data = cur.fetchall()
@@ -157,6 +168,7 @@ def servicio():
     print(data, file=sys.stdout)
     resultado = []
     for current in data:
+        #if current[1] == "a@gmail.com":
         actual = {
             "id" : current[0],
             "email" : current[1],
