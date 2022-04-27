@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Text, View, FlatList } from 'react-native';
 import React from 'react';
-import Item from './Item';
+import Item from '../Components/Item';
 import { StatusBar } from 'expo-status-bar';
 import  { useEffect } from "react";
 
@@ -20,7 +20,8 @@ const Principal = ({navigation} : any) => {
   
     const solicitud = async() => {
   
-      var respuesta = await fetch(`http://127.0.0.1:5000/`);
+      //var respuesta = await fetch("https://raw.githubusercontent.com/gmorivastec/TC3005B_FRONTEND_APR4/master/gatitos.json");
+      var respuesta = await fetch("http://127.0.0.1:5000/");
       setDatos(await respuesta.json());
       setCargando(false);
     };
