@@ -9,13 +9,13 @@ const Login = ({navigation} : any) => {
     
     const[user, setUser] = useState('a@gmail.com');
     const[password, setPassword] = useState("");
-    const[token, setToken] = useState("");
+    const[token, setToken] = useState("1111");
     const[mensajeDeError, setMensajeDeError] = useState("");
 
     // ESTRICTAMENTE TEMPORAL
     var global_user = "";
     var global_password = "";
-    var global_token = "";
+    
 
     const solicitud = async() => {
       const e = 'a@gmail.com';
@@ -31,6 +31,8 @@ const Login = ({navigation} : any) => {
       console.log(await a[0][2]);
       setUser(a[0][1]);
       setPassword(a[0][2]);
+      setPassword(a[0][3]);
+
     
     };
     const useMountEffect = (fun: any) => useEffect(fun, []);
@@ -54,7 +56,7 @@ const Login = ({navigation} : any) => {
         if(response.status == 200){
             global_user = user;
             global_password = password;
-            navigation.navigate("Principal", {user: global_user});
+            navigation.navigate("Principal", {token: token});
             
         }
   };
@@ -66,6 +68,11 @@ const Login = ({navigation} : any) => {
     headers.append("Authorization", user + ":" + password);
     var response = await fetch('http://127.0.0.1:5000/protegido', {headers: headers});
     alert(await response.text() + " --- " + response.status);
+    if(response.status == 200){
+      
+      navigation.navigate("Principal", {token: token});
+      
+    }
   };
    
     return (
