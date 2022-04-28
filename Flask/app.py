@@ -152,6 +152,7 @@ def servicio_default():
 @app.route("/users", methods=['POST'])
 def servicio():
     e = flask.request.form['e']
+    p = flask.request.form['p']
     print(e)
      # lo primero es obtener cursor 
     cur = db.connection.cursor()
@@ -168,15 +169,15 @@ def servicio():
     print(data, file=sys.stdout)
     resultado = []
     for current in data:
-        #if current[1] == "a@gmail.com":
-        actual = {
-            "id" : current[0],
-            "email" : current[1],
-            "password" : current[2],
-            "token": current[3],
-            "fechaexp": current[4]
-        }
-        resultado.append(actual)
+        if current[2] == p:
+            actual = {
+                "id" : current[0],
+                "email" : current[1],
+                "password" : current[2],
+                "token": current[3],
+                "fechaexp": current[4]
+            }
+            resultado.append(actual)
 
      # puedes checar alternativas para mapeo de datos
     # por hoy vamos a armar un objeto jsoneable para regresar 

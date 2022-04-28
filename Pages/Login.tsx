@@ -18,9 +18,10 @@ const Login = ({navigation} : any) => {
     
 
     const solicitud = async() => {
-      const e = 'a@gmail.com';
+      
       const formData = new FormData();
       formData.append('e', user);
+      formData.append('p', password);
       var respuesta = await fetch('http://127.0.0.1:5000/users', {
           method: 'POST',
           body: formData
@@ -29,14 +30,15 @@ const Login = ({navigation} : any) => {
       //var respuesta = await fetch("http://127.0.0.1:5000/users");
       var a = await respuesta.json();
       console.log(await a[0][2]);
-      setUser(a[0][1]);
-      setPassword(a[0][2]);
-      setPassword(a[0][3]);
+      setUser(await a[0][1]);
+      setPassword(await a[0][2]);
+      setPassword(await a[0][3]);
+      await protegido();
 
     
     };
     const useMountEffect = (fun: any) => useEffect(fun, []);
-    useMountEffect(solicitud);
+    //useMountEffect(solicitud);
     const login = async() => {
         
         const formData = new FormData();
@@ -100,7 +102,7 @@ const Login = ({navigation} : any) => {
         <Button 
             title="PROTEGIDO"
             onPress={() => {
-            protegido();
+            solicitud();
             }}
         /> 
         <StatusBar style="auto" />
